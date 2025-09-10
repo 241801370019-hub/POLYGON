@@ -1,1 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Project {
+    // State variables
+    string public projectName = "POLYGON";
+    address public owner;
+    mapping(address => uint256) public balances;
+
+    // Events
+    event FundsDeposited(address indexed user, uint256 amount);
+    event FundsWithdrawn(address indexed user, uint256 amount);
+
+    // Constructor
+    constructor() {
+        owner = msg.sender;
+    }
+
+    // Core Function 1: Deposit funds
+    function deposit() external payable {
+        require(msg.value > 0, "Amount must be greater than zero");
+        balances[msg.sender] += msg.value;
+        emit FundsDeposited(msg.sender, msg.value);
+    }
+
+    // Core Function 2: Withdraw funds
+    function withdraw(uint256 amount) external {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        payable(msg.sender).transfer(amount);
+        emit FundsWithdrawn(msg.sender, amount);
+    }
+
+    // Core Function 3: Check balance
+    function checkBalance() external view returns (uint256) {
+        return balances[msg.sender];
+    }
+}
 
